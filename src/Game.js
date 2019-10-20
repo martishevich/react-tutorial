@@ -38,6 +38,14 @@ class Game extends React.Component {
         });
     }
 
+    getStatusOfGame(winner) {
+        const isGameFinished = this.state.stepNumber === 9;
+        if (isGameFinished) {
+            return 'Draw';
+        }
+        return winner ? `Winner: ${winner}` : `Next player: ${(this.state.xIsNext ? 'X' : 'O')}`;
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -56,7 +64,7 @@ class Game extends React.Component {
                 </li>
             );
         });
-        const status = winner ? `Winner: ${winner}` : `Next player: ${(this.state.xIsNext ? 'X' : 'O')}`;
+        const status = this.getStatusOfGame(winner);
         return (
             <div className="game">
                 <div className="game-board">
