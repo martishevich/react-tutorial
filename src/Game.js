@@ -8,6 +8,8 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                columnId: null,
+                rowId: null,
             }],
             stepNumber: 0,
             xIsNext: true,
@@ -25,6 +27,8 @@ class Game extends React.Component {
         this.setState({
             history: history.concat([{
                 squares: squares,
+                rowId: this.getRow(i),
+                columnId: this.getColumn(i),
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
@@ -38,12 +42,24 @@ class Game extends React.Component {
         });
     }
 
+    getBoardSize() {
+        return 3;
+    }
+
     getStatusOfGame(winner) {
         const isGameFinished = this.state.stepNumber === 9;
         if (isGameFinished) {
             return 'Draw';
         }
         return winner ? `Winner: ${winner}` : `Next player: ${(this.state.xIsNext ? 'X' : 'O')}`;
+    }
+
+    getRow(i) {
+        return Math.floor(i / this.getBoardSize());
+    }
+
+    getColumn(i) {
+        return i % this.getBoardSize();
     }
 
     render() {
@@ -55,11 +71,14 @@ class Game extends React.Component {
             const desc = move ? `Go to move #${move}` : 'Go to game start';
             const isCurrentMoveSelected = move === this.state.stepNumber;
             const buttonStyle = { fontWeight: isCurrentMoveSelected ? 'bold' : 'normal' };
+            const position = step.columnId !== null && step.rowId !== null
+                ? `column: ${step.columnId} row: ${step.rowId}`
+                : '';
 
             return (
                 <li key={move}>
                     <button onClick={() => this.jumpTo(move)} style={ buttonStyle }>
-                        {desc}
+                        {desc} {position}
                     </button>
                 </li>
             );
