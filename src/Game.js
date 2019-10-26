@@ -13,6 +13,7 @@ class Game extends React.Component {
             }],
             stepNumber: 0,
             xIsNext: true,
+            isAsc: true,
         };
     }
 
@@ -62,12 +63,18 @@ class Game extends React.Component {
         return i % this.getBoardSize();
     }
 
+    changeOrder() {
+        this.setState({
+            isAsc: !this.state.isAsc
+    });
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
+        let moves = history.map((step, move) => {
             const desc = move ? `Go to move #${move}` : 'Go to game start';
             const isCurrentMoveSelected = move === this.state.stepNumber;
             const buttonStyle = { fontWeight: isCurrentMoveSelected ? 'bold' : 'normal' };
@@ -83,6 +90,10 @@ class Game extends React.Component {
                 </li>
             );
         });
+        const orderDesc = this.state.isAsc ? 'Asc' : 'Desc';
+        if (!this.state.isAsc) {
+            moves = moves.reverse();
+        }
         const status = this.getStatusOfGame(winner);
         return (
             <div className="game">
@@ -93,6 +104,10 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info">
+                    <div>
+                        <button onClick={() => this.changeOrder()}>sort order</button>
+                        {orderDesc}
+                    </div>
                     <div>{status}</div>
                     <ol>{moves}</ol>
                 </div>
